@@ -2,8 +2,9 @@
 #define PONG_GAMEOBJECT_HPP
 
 #include "Game.hpp"
+#include "IEntity.hpp"
 
-class GameObject
+class GameObject : public IEntity
 {
 public:
 	GameObject(const char *texturesheet, int x, int y, int h, int w, bool constantlyMoving);
@@ -18,16 +19,13 @@ public:
 
 
 	void move();
-	void update();
-	void render();
+	void update() override;
+	void render() override;
 
+	int getYpos() const;
+	int getHobj() const;
 private:
 	bool pointInObject(int x, int y, GameObject *gameObject);
-
-public:
-	int getYpos() const;
-
-	int getHobj() const;
 
 private:
 	int				xStart;
@@ -36,7 +34,7 @@ private:
 	int				ypos;
 	int				hobj;
 	int				wobj;
-	int				directionMoving{};
+	int				directionMoving;
 	bool 			constantlyMoving;
 
 	SDL_Texture		*objectTexture;
