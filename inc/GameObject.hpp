@@ -36,12 +36,12 @@ private:
 	int				ypos;
 	int				hobj;
 	int				wobj;
-	int				directionMoving;
+	int				directionMoving{};
 	bool 			constantlyMoving;
 
 	SDL_Texture		*objectTexture;
-	SDL_Rect		srcRect;
-	SDL_Rect		dstRect;
+	SDL_Rect		srcRect{};
+	SDL_Rect		dstRect{};
 };
 
 

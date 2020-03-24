@@ -1,5 +1,4 @@
 #include "../inc/ScoreManager.hpp"
-#include "../inc/TextureManager.hpp"
 
 std::pair<int, int> ScoreManager::playersScore(0, 0);
 
@@ -25,13 +24,13 @@ void ScoreManager::addScore(int playerPosition)
 void ScoreManager::loadFont(const char *filename, int ptsize)
 {
 	Times = TTF_OpenFont(filename, ptsize);
-	if (Times == NULL)
+	if (Times == nullptr)
 		std::cout << "Unable to load font: " << filename << std::endl << TTF_GetError() << std::endl;
 }
 
 void ScoreManager::draw()
 {
-	SDL_Color White = {255, 255, 255};
+	SDL_Color White = {0x00, 0x11, 0xFF};
 
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Times, std::to_string(playersScore.first).c_str(), White);
 
@@ -44,7 +43,7 @@ void ScoreManager::draw()
 	Message_rect.h = 100;
 
 
-	SDL_RenderCopy(Game::renderer, Message, NULL, &Message_rect);
+	SDL_RenderCopy(Game::renderer, Message, nullptr, &Message_rect);
 
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(Message);
@@ -53,7 +52,7 @@ void ScoreManager::draw()
 	Message = SDL_CreateTextureFromSurface(Game::renderer, surfaceMessage);
 	Message_rect.x = 600;
 
-	SDL_RenderCopy(Game::renderer, Message, NULL, &Message_rect);
+	SDL_RenderCopy(Game::renderer, Message, nullptr, &Message_rect);
 
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(Message);

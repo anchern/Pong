@@ -1,17 +1,17 @@
 #include "../inc/TextureManager.hpp"
 
-SDL_Texture *TextureManager::loadTexture(const char *filename)
+SDL_Texture *TextureManager::loadTexture(const char *filename, int texLimit)
 {
-	SDL_Texture *result = NULL;
+	SDL_Texture *result = nullptr;
 
 	SDL_Surface *pSurface = IMG_Load(filename);
 
-	if (pSurface == NULL)
+	if (pSurface == nullptr)
 	{
 		printf("Error image load: %s\n", IMG_GetError());
 	} else
 	{
-		const int limit = 30;
+		const int limit = texLimit;
 		int width = pSurface->w;
 		int height = pSurface->h;
 
@@ -35,8 +35,8 @@ SDL_Texture *TextureManager::loadTexture(const char *filename)
 			SDL_Rect targetDimensions;
 			targetDimensions.x = 0;
 			targetDimensions.y = 0;
-			targetDimensions.w = (int) (width * scale);
-			targetDimensions.h = (int) (height * scale);
+			targetDimensions.w = static_cast<int>(static_cast<float>(width) * scale);
+			targetDimensions.h = static_cast<int>(static_cast<float>(height) * scale);
 
 			// create a 32 bits per pixel surface to Blit the image to first, before BlitScaled
 			SDL_Surface *p32BPPSurface = SDL_CreateRGBSurface(
@@ -49,7 +49,7 @@ SDL_Texture *TextureManager::loadTexture(const char *filename)
 					pSurface->format->Bmask,
 					pSurface->format->Amask);
 
-			if (SDL_BlitSurface(pSurface, NULL, p32BPPSurface, NULL) < 0)
+			if (SDL_BlitSurface(pSurface, nullptr, p32BPPSurface, nullptr) < 0)
 			{
 				printf("Error did not blit surface: %s\n", SDL_GetError());
 			} else
@@ -69,12 +69,12 @@ SDL_Texture *TextureManager::loadTexture(const char *filename)
 				// 8 and 24 bit depth pngs did not require this
 				SDL_FillRect(pScaleSurface, &targetDimensions, SDL_MapRGBA(pScaleSurface->format, 0, 0, 0, 0));
 
-				if (SDL_BlitScaled(p32BPPSurface, NULL, pScaleSurface, NULL) < 0)
+				if (SDL_BlitScaled(p32BPPSurface, nullptr, pScaleSurface, nullptr) < 0)
 				{
 					printf("Error did not scale surface: %s\n", SDL_GetError());
 
 					SDL_FreeSurface(pScaleSurface);
-					pScaleSurface = NULL;
+					pScaleSurface = nullptr;
 				} else
 				{
 					SDL_FreeSurface(pSurface);
@@ -86,12 +86,12 @@ SDL_Texture *TextureManager::loadTexture(const char *filename)
 			}
 
 			SDL_FreeSurface(p32BPPSurface);
-			p32BPPSurface = NULL;
+			p32BPPSurface = nullptr;
 		}
 
 		SDL_Texture *pTexture = SDL_CreateTextureFromSurface(Game::renderer, pSurface);
 
-		if (pTexture == NULL)
+		if (pTexture == nullptr)
 		{
 			printf("Error image load: %s\n", SDL_GetError());
 		} else
@@ -104,7 +104,7 @@ SDL_Texture *TextureManager::loadTexture(const char *filename)
 		}
 
 		SDL_FreeSurface(pSurface);
-		pSurface = NULL;
+		pSurface = nullptr;
 	}
 
 	return result;

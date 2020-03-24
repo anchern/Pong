@@ -2,6 +2,7 @@
 #include "../inc/GameObject.hpp"
 #include "../inc/ScoreManager.hpp"
 #include "../inc/AILogic.hpp"
+#include "../inc/TextureManager.hpp"
 
 #include <SDL2/SDL_ttf.h>
 
@@ -9,8 +10,9 @@
 #include <random>
 
 Game *Game::pInstance = nullptr;
-SDL_Renderer *Game::renderer = nullptr;
 
+SDL_Renderer *Game::renderer = nullptr;
+SDL_Texture		*backgroundTexture = nullptr;
 
 GameObject	*playerRacquet;
 GameObject	*AIRacquet;
@@ -18,9 +20,10 @@ GameObject	*ball;
 
 AILogic			*AI;
 
+
 int getRandomNumber(int low, int high)
 {
-	std::mt19937 gen(time(0));
+	std::mt19937 gen(time(nullptr));
 	std::uniform_int_distribution<> id(low, high);
 	return (id(gen));
 }
@@ -51,13 +54,12 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 		isRunning = false;
 
 	ScoreManager::loadFont("assets/Times.ttf", 14);
+	backgroundTexture = TextureManager::loadTexture("assets/background.png", 800);
 
 	playerRacquet = new GameObject("assets/player.png", 10, height / 2 - 50, 100, 20, false);
-
 	AIRacquet = new GameObject("assets/ai.png", width - 30, height / 2 - 50, 100, 20, false);
 
 	ball = new GameObject("assets/ball.png", width / 2 - 10, height / 2 - 10, 30, 30, true);
-
 	ball->setDirection(getRandomNumber(1, 360));
 
 	AI = new AILogic(ball, AIRacquet);
@@ -66,7 +68,7 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 
 void Game::handleGameEvents()
 {
-	const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+	const Uint8 *keystates = SDL_GetKeyboardState(nullptr);
 
 	if (keystates[SDL_SCANCODE_ESCAPE])
 		isRunning = false;
@@ -110,6 +112,7 @@ void Game::handleEvents()
 void Game::render()
 {
 	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr);
 	ScoreManager::draw();
 	playerRacquet->render();
 	AIRacquet->render();

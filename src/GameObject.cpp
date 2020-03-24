@@ -4,7 +4,7 @@
 
 GameObject::GameObject(const char *texturesheet, int x, int y, int h, int w, bool constantlyMoving)
 {
-	objectTexture = TextureManager::loadTexture(texturesheet);
+	objectTexture = TextureManager::loadTexture(texturesheet, 30);
 	xpos = x;
 	ypos = y;
 	xStart = x;
