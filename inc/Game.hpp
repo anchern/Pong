@@ -1,10 +1,17 @@
 #ifndef PONG_GAME_HPP
 #define PONG_GAME_HPP
 
-# include <SDL2/SDL.h>
-# include <SDL2/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-# include <iostream>
+#include <iostream>
+#include <vector>
+
+enum {
+	LEFT_PLAYER,
+	RIGHT_PLAYER,
+	BALL
+};
 
 class Game
 {
@@ -30,15 +37,16 @@ private:
 	Game(const Game &);
 	Game &operator=(Game &);
 
-	void handleGameEvents();
+
+public:
+	static int widthWindow;
+	static int heightWindow;
 
 private:
-	bool isRunning;
-	SDL_Window *window;
+	bool _isRunning;
+	SDL_Window *_window;
 
-	static Game *pInstance;
+	static Game *_pInstance;
 };
-
-int getRandomNumber(int low, int high);
 
 #endif

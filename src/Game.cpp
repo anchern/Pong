@@ -1,36 +1,29 @@
 #include "../inc/Game.hpp"
-#include "../inc/GameObject.hpp"
 #include "../inc/ScoreManager.hpp"
 #include "../inc/AILogic.hpp"
 #include "../inc/TextureManager.hpp"
+#include "../inc/Ball.hpp"
+#include "../inc/GameObjManager.hpp"
 
 #include <SDL2/SDL_ttf.h>
 
-#include <ctime>
-#include <random>
+Game 			*Game::_pInstance = nullptr;
 
-Game *Game::pInstance = nullptr;
+int				Game::widthWindow;
+int				Game::heightWindow;
+SDL_Renderer	*Game::renderer = nullptr;
 
-SDL_Renderer *Game::renderer = nullptr;
 SDL_Texture		*backgroundTexture = nullptr;
-
-GameObject	*playerRacquet;
-GameObject	*AIRacquet;
-GameObject	*ball;
-
+GameObjManager	objManager;
 AILogic			*AI;
 
 
-int getRandomNumber(int low, int high)
-{
-	std::mt19937 gen(time(nullptr));
-	std::uniform_int_distribution<> id(low, high);
-	return (id(gen));
-}
 
 void Game::init(const char *title, int width, int height, bool fullscreen)
 {
 	int flags = 0;
+	widthWindow = width;
+	heightWindow = height;
 
 	if (fullscreen)
 		flags = SDL_WINDOW_FULLSCREEN;
@@ -40,57 +33,31 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 		IMG_Init(IMG_INIT_PNG);
 		std::cout << "Subsystems initialised..." << std::endl;
 
-		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-		if (window)
+		_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+		if (_window)
 			std::cout << "Window created." << std::endl;
-		renderer = SDL_CreateRenderer(window, -1, 0);
+		renderer = SDL_CreateRenderer(_window, -1, 0);
 		if (renderer)
 		{
 			SDL_SetRenderDrawColor(renderer, 0x1E, 0x8A, 0x00, 0xFF);
 			std::cout << "Renderer created." << std::endl;
 		}
-		isRunning = true;
+		_isRunning = true;
 	} else
-		isRunning = false;
+		_isRunning = false;
 
 	ScoreManager::loadFont("assets/Times.ttf", 14);
 	backgroundTexture = TextureManager::loadTexture("assets/background.png", 800);
 
-	playerRacquet = new GameObject("assets/player.png", 10, height / 2 - 50, 100, 20, false);
-	AIRacquet = new GameObject("assets/ai.png", width - 30, height / 2 - 50, 100, 20, false);
+	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/player.png", 10, height / 2 - 50, 100, 20);
+	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/ai.png", width - 30, height / 2 - 50, 100, 20);
+	objManager.addObject<Ball, const char *, int, int, int, int>("assets/_ball.png", width / 2 - 10, height / 2 - 10, 30, 30);
 
-	ball = new GameObject("assets/ball.png", width / 2 - 10, height / 2 - 10, 30, 30, true);
-	ball->setDirection(getRandomNumber(1, 360));
 
-	AI = new AILogic(ball, AIRacquet);
+	AI = new AILogic(objManager.getObject(BALL), objManager.getObject(RIGHT_PLAYER));
 
 }
 
-void Game::handleGameEvents()
-{
-	const Uint8 *keystates = SDL_GetKeyboardState(nullptr);
-
-	if (keystates[SDL_SCANCODE_ESCAPE])
-		isRunning = false;
-	else if (keystates[SDL_SCANCODE_W])
-	{
-		playerRacquet->setDirection(90);
-		playerRacquet->move();
-	}
-	else if (keystates[SDL_SCANCODE_S])
-	{
-		playerRacquet->setDirection(-90);
-		playerRacquet->move();
-	}
-//	else if (keystates[SDL_SCANCODE_SPACE])
-//	{
-//		playerRacquet->reset();
-//		ball->reset();
-//		ball->setDirection(getRandomNumber(1, 360));
-//		AIRacquet->reset();
-//		ScoreManager::reset();
-//	}
-}
 
 void Game::handleEvents()
 {
@@ -98,11 +65,11 @@ void Game::handleEvents()
 
 	SDL_PollEvent(&event);
 
-	handleGameEvents();
+	objManager.handleObjectEvents();
 	switch (event.type)
 	{
 		case SDL_QUIT:
-			isRunning = false;
+			_isRunning = false;
 			break;
 		default:
 			break;
@@ -114,26 +81,21 @@ void Game::render()
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, backgroundTexture, nullptr, nullptr);
 	ScoreManager::draw();
-	playerRacquet->render();
-	AIRacquet->render();
-	ball->render();
+	objManager.draw();
 	SDL_RenderPresent(renderer);
 }
 
 void Game::update()
 {
+	objManager.update();
 	AI->update();
-	playerRacquet->update();
-	ball->update();
-	ball->collisionHandle(playerRacquet);
-	ball->collisionHandle(AIRacquet);
 }
 
 void Game::clean()
 {
 	TTF_Quit();
 	IMG_Quit();
-	SDL_DestroyWindow(window);
+	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 	std::cout << "Game Cleaned." << std::endl;
@@ -141,12 +103,12 @@ void Game::clean()
 
 bool Game::running()
 {
-	return isRunning;
+	return _isRunning;
 }
 
 Game *Game::getInstance()
 {
-	if (!pInstance)
-		pInstance = new Game();
-	return pInstance;
+	if (!_pInstance)
+		_pInstance = new Game();
+	return _pInstance;
 }

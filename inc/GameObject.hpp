@@ -1,45 +1,41 @@
 #ifndef PONG_GAMEOBJECT_HPP
 #define PONG_GAMEOBJECT_HPP
 
-#include "Game.hpp"
+#include <SDL2/SDL.h>
+
 #include "IEntity.hpp"
 
 class GameObject : public IEntity
 {
 public:
-	GameObject(const char *texturesheet, int x, int y, int h, int w, bool constantlyMoving);
+	GameObject(const char *texturesheet, int x, int y, int h, int w);
 	~GameObject() = default;
 
 	void setDirection(int degrees);
 
-	void reset();
-	void invertDirection();
+	virtual void reset();
 
-	void collisionHandle(GameObject *gameObject);
+	virtual void move();
+	virtual void update() override;
+	void draw() override;
 
+	int getYPos() const;
+	int getHObj() const;
+	int getXPos() const;
+	int getWObj() const;
 
-	void move();
-	void update() override;
-	void render() override;
-
-	int getYpos() const;
-	int getHobj() const;
-private:
-	bool pointInObject(int x, int y, GameObject *gameObject);
-
-private:
+protected:
 	int				xStart;
 	int 			yStart;
-	int				xpos;
-	int				ypos;
-	int				hobj;
-	int				wobj;
+	int				xPos;
+	int				yPos;
+	int 			speedObj;
+	int				hObj;
+	int				wObj;
 	int				directionMoving;
-	bool 			constantlyMoving;
 
 	SDL_Texture		*objectTexture;
-	SDL_Rect		srcRect{};
-	SDL_Rect		dstRect{};
+	SDL_Rect		dstRect;
 };
 
 

@@ -1,17 +1,17 @@
 #include "../inc/GameObject.hpp"
 #include "../inc/TextureManager.hpp"
-#include "../inc/ScoreManager.hpp"
+#include "../inc/Game.hpp"
 
-GameObject::GameObject(const char *texturesheet, int x, int y, int h, int w, bool constantlyMoving)
+GameObject::GameObject(const char *texturesheet, int x, int y, int h, int w)
 {
 	objectTexture = TextureManager::loadTexture(texturesheet, 30);
-	xpos = x;
-	ypos = y;
+	xPos = x;
+	yPos = y;
 	xStart = x;
 	yStart = y;
-	hobj = h;
-	wobj = w;
-	this->constantlyMoving = constantlyMoving;
+	hObj = h;
+	wObj = w;
+	speedObj = 5;
 }
 
 void GameObject::setDirection(int degrees)
@@ -21,96 +21,49 @@ void GameObject::setDirection(int degrees)
 
 void GameObject::move()
 {
-	int tmp = 5;
-
-	if (constantlyMoving)
-		tmp = 8;
-	xpos += (int) std::round(std::cos(directionMoving * M_PI / 180) * tmp);
-	ypos -= (int) std::round(std::sin(directionMoving * M_PI / 180) * tmp);
-	if (ypos < 1)
-	{
-		if (constantlyMoving)
-			invertDirection();
-		ypos = 1;
-	} else if (ypos + hobj > 639)
-	{
-		if (constantlyMoving)
-			invertDirection();
-		ypos = 639 - hobj;
-	} else if (constantlyMoving && (xpos < 2 || xpos + wobj > 798))
-	{
-		reset();
-		if (directionMoving > 0)
-			directionMoving -= 180;
-		else
-			directionMoving += 180;
-	}
+	xPos += (int) std::round(std::cos(directionMoving * M_PI / 180) * speedObj);
+	yPos -= (int) std::round(std::sin(directionMoving * M_PI / 180) * speedObj);
+	if (yPos < 1)
+		yPos = 1;
+	else if (yPos + hObj > Game::heightWindow - 1)
+		yPos = Game::heightWindow - 1 - hObj;
 }
 
 void GameObject::update()
 {
-	if (constantlyMoving)
-		move();
-
-	srcRect.h = 32;
-	srcRect.w = 32;
-	srcRect.x = 0;
-	srcRect.y = 0;
-
-	dstRect.h = hobj;
-	dstRect.w = wobj;
-	dstRect.x = xpos;
-	dstRect.y = ypos;
+	dstRect.h = hObj;
+	dstRect.w = wObj;
+	dstRect.x = xPos;
+	dstRect.y = yPos;
 }
 
-void GameObject::render()
+void GameObject::draw()
 {
-	SDL_RenderCopy(Game::renderer, objectTexture, &srcRect, &dstRect);
+	SDL_RenderCopy(Game::renderer, objectTexture, nullptr, &dstRect);
 }
 
 void GameObject::reset()
 {
-	if (xpos < 2)
-		ScoreManager::addScore(RIGHT_PLAYER);
-	else if (xpos + wobj > 798)
-		ScoreManager::addScore(LEFT_PLAYER);
-	xpos = xStart;
-	ypos = yStart;
-	std::cout << ScoreManager::playersScore.first << " " << ScoreManager::playersScore.second << std::endl;
+	xPos = xStart;
+	yPos = yStart;
 }
 
-void GameObject::invertDirection()
+int GameObject::getYPos() const
 {
-	directionMoving = -directionMoving;
+	return yPos;
 }
 
-bool GameObject::pointInObject(int x, int y, GameObject *gameObject)
+int GameObject::getHObj() const
 {
-	return x > gameObject->xpos &&
-		   y > gameObject->ypos &&
-		   x < gameObject->xpos + gameObject->wobj &&
-		   y < gameObject->ypos + gameObject->hobj;
+	return hObj;
 }
 
-void GameObject::collisionHandle(GameObject *gameObject)
+int GameObject::getXPos() const
 {
-	if (constantlyMoving)
-	{
-		if (pointInObject(xpos, ypos, gameObject) ||
-			pointInObject(xpos + wobj, ypos, gameObject) ||
-			pointInObject(xpos, ypos + hobj, gameObject) ||
-			pointInObject(xpos + wobj, ypos + hobj, gameObject)
-				)
-			directionMoving = 180 - directionMoving;
-	}
+	return xPos;
 }
 
-int GameObject::getYpos() const
+int GameObject::getWObj() const
 {
-	return ypos;
-}
-
-int GameObject::getHobj() const
-{
-	return hobj;
+	return wObj;
 }

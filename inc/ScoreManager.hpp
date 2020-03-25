@@ -9,10 +9,6 @@
 
 #include "../inc/Game.hpp"
 
-enum {
-	LEFT_PLAYER,
-	RIGHT_PLAYER
-};
 
 class ScoreManager
 {

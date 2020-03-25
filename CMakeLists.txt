@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_package(SDL2 REQUIRED SDL2)
 
-add_executable(Pong src/main.cpp src/Game.cpp inc/Game.hpp src/GameObject.cpp inc/GameObject.hpp src/TextureManager.cpp inc/TextureManager.hpp src/ScoreManager.cpp inc/ScoreManager.hpp src/AILogic.cpp inc/AILogic.hpp inc/IEntity.hpp)
+add_executable(Pong src/main.cpp src/Game.cpp inc/Game.hpp src/GameObject.cpp inc/GameObject.hpp src/TextureManager.cpp inc/TextureManager.hpp src/ScoreManager.cpp inc/ScoreManager.hpp src/AILogic.cpp inc/AILogic.hpp inc/IEntity.hpp src/Ball.cpp inc/Ball.hpp src/GameObjManager.cpp inc/GameObjManager.hpp)
 
 target_link_libraries(Pong
         PRIVATE SDL2

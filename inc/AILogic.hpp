@@ -9,8 +9,8 @@ public:
 	AILogic(GameObject *ball, GameObject *AIRacquet);
 	void update();
 private:
-	GameObject *ball;
-	GameObject *AIRacquet;
+	GameObject *_ball;
+	GameObject *_AIRacquet;
 };
 
 

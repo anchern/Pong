@@ -2,21 +2,21 @@
 
 AILogic::AILogic(GameObject *ball, GameObject *AIRacquet)
 {
-	this->ball = ball;
-	this->AIRacquet = AIRacquet;
+	this->_ball = ball;
+	this->_AIRacquet = AIRacquet;
 }
 
 void AILogic::update()
 {
-	if (AIRacquet->getYpos() + 0.5 * AIRacquet->getHobj() > ball->getYpos() + 0.5 * ball->getHobj())
+	if (_AIRacquet->getYPos() + 0.5 * _AIRacquet->getHObj() > _ball->getYPos() + 0.5 * _ball->getHObj())
 	{
-		AIRacquet->setDirection(90);
-		AIRacquet->move();
+		_AIRacquet->setDirection(90);
+		_AIRacquet->move();
 	}
-	else if (AIRacquet->getYpos() + 0.5 * AIRacquet->getHobj() < ball->getYpos() + 0.5 * ball->getHobj())
+	else if (_AIRacquet->getYPos() + 0.5 * _AIRacquet->getHObj() < _ball->getYPos() + 0.5 * _ball->getHObj())
 	{
-		AIRacquet->setDirection(-90);
-		AIRacquet->move();
+		_AIRacquet->setDirection(-90);
+		_AIRacquet->move();
 	}
-	AIRacquet->update();
+	_AIRacquet->update();
 }
