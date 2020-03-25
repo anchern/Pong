@@ -13,6 +13,9 @@ void SoundManager::loadBackgroundMusic(const char *filename)
 void SoundManager::destroy()
 {
 	Mix_FreeMusic(_backgroundMusic);
+	Mix_FreeChunk(_goalEffect);
+	Mix_FreeChunk(_loseEffect);
+	Mix_FreeChunk(_collisionEffect);
 }
 
 void SoundManager::playBackgroundMusic()
