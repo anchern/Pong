@@ -11,6 +11,8 @@ class Ball : public GameObject
 public:
 	Ball(const char *texturesheet, int x, int y, int h, int w);
 
+	void randomDirection();
+
 	void reset() override;
 
 	void move() override;

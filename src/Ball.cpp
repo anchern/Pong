@@ -82,3 +82,8 @@ void Ball::move()
 			directionMoving += 180;
 	}
 }
+
+void Ball::randomDirection()
+{
+	directionMoving = getBallDitection();
+}

@@ -1,6 +1,8 @@
 #ifndef PONG_GAME_HPP
 #define PONG_GAME_HPP
 
+#include "../inc/SoundManager.hpp"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -30,7 +32,6 @@ public:
 
 	bool running();
 
-	static SDL_Renderer *renderer;
 
 private:
 	Game() = default;
@@ -39,6 +40,10 @@ private:
 
 
 public:
+	static SDL_Renderer *renderer;
+
+	static SoundManager soundManager;
+
 	static int widthWindow;
 	static int heightWindow;
 

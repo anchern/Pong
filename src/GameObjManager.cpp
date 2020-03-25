@@ -17,14 +17,13 @@ void GameObjManager::handleObjectEvents()
 		_gameObjects[LEFT_PLAYER]->setDirection(-90);
 		_gameObjects[LEFT_PLAYER]->move();
 	}
-//	else if (keystates[SDL_SCANCODE_SPACE])
-//	{
-//		playerRacquet->reset();
-//		_ball->reset();
-//		_ball->setDirection(getRandomNumber(1, 360));
-//		_AIRacquet->reset();
-//		ScoreManager::reset();
-//	}
+	else if (keystates[SDL_SCANCODE_SPACE])
+	{
+		for (auto &gameObject : _gameObjects)
+			gameObject->reset();
+		ScoreManager::reset();
+		dynamic_cast<Ball *>(_gameObjects[BALL].get())->randomDirection();
+	}
 }
 
 bool GameObjManager::pointInObject(int x, int y, GameObject *gameObject)
@@ -49,6 +48,7 @@ void GameObjManager::collisionHandle()
 			pointInObject(pBall->getXPos() + pBall->getWObj(), pBall->getYPos() + pBall->getHObj(), gameObject)
 				)
 		{
+			Game::soundManager.playCollisionEffect();
 			pBall->reflectionX();
 
 		}
@@ -74,10 +74,12 @@ void GameObjManager::update()
 			if (pBall->getXPos() < 2)
 			{
 				gameObject->reset();
+				Game::soundManager.playLoseEffect();
 				ScoreManager::addScore(RIGHT_PLAYER);
 			} else if (pBall->getXPos() + pBall->getWObj() > Game::widthWindow - 2)
 			{
 				gameObject->reset();
+				Game::soundManager.playGoalEffect();
 				ScoreManager::addScore(LEFT_PLAYER);
 			}
 		}

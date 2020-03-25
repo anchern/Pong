@@ -5,7 +5,6 @@
 #include "../inc/Ball.hpp"
 #include "../inc/GameObjManager.hpp"
 
-#include <SDL2/SDL_ttf.h>
 
 Game 			*Game::_pInstance = nullptr;
 
@@ -16,6 +15,9 @@ SDL_Renderer	*Game::renderer = nullptr;
 SDL_Texture		*backgroundTexture = nullptr;
 GameObjManager	objManager;
 AILogic			*AI;
+
+SoundManager Game::soundManager;
+
 
 
 
@@ -29,9 +31,9 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 		flags = SDL_WINDOW_FULLSCREEN;
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
+		std::cout << "Subsystems initialised..." << std::endl;
 		TTF_Init();
 		IMG_Init(IMG_INIT_PNG);
-		std::cout << "Subsystems initialised..." << std::endl;
 
 		_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 		if (_window)
@@ -46,11 +48,18 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 	} else
 		_isRunning = false;
 
-	ScoreManager::loadFont("assets/Times.ttf", 14);
+	soundManager.init();
+	soundManager.loadBackgroundMusic("assets/bgMusic.mp3");
+	soundManager.playBackgroundMusic();
+	soundManager.loadCollisionEffect("assets/collisionEffect.wav");
+	soundManager.loadGoalEffect("assets/goal.wav");
+	soundManager.loadLoseEffect("assets/lose.wav");
+
+	ScoreManager::loadFont("assets/Times.ttf", 50);
 	backgroundTexture = TextureManager::loadTexture("assets/background.png", 800);
 
-	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/player.png", 10, height / 2 - 50, 100, 20);
-	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/ai.png", width - 30, height / 2 - 50, 100, 20);
+	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/player.png", 10, height / 2 - 50, 70, 20);
+	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/ai.png", width - 30, height / 2 - 50, 70, 20);
 	objManager.addObject<Ball, const char *, int, int, int, int>("assets/ball.png", width / 2 - 10, height / 2 - 10, 30, 30);
 
 
@@ -93,6 +102,7 @@ void Game::update()
 
 void Game::clean()
 {
+	soundManager.destroy();
 	TTF_Quit();
 	IMG_Quit();
 	SDL_DestroyWindow(_window);
