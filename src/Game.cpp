@@ -19,6 +19,16 @@ AILogic			*AI;
 SoundManager Game::soundManager;
 
 
+namespace
+{
+	void printGameControl()
+	{
+		std::cout << "Game control:" << std::endl
+					<< "a - move panel up" << std::endl
+					<< "s - move panel down" << std::endl
+					<< "SPACE - new game" << std::endl;
+	}
+}
 
 
 void Game::init(const char *title, int width, int height, bool fullscreen)
@@ -47,7 +57,7 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 		_isRunning = true;
 	} else
 		_isRunning = false;
-
+	printGameControl();
 	soundManager.init();
 	soundManager.loadBackgroundMusic("assets/bgMusic.mp3");
 	soundManager.playBackgroundMusic();
