@@ -51,7 +51,7 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 
 	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/player.png", 10, height / 2 - 50, 100, 20);
 	objManager.addObject<GameObject, const char *, int, int, int, int>("assets/ai.png", width - 30, height / 2 - 50, 100, 20);
-	objManager.addObject<Ball, const char *, int, int, int, int>("assets/_ball.png", width / 2 - 10, height / 2 - 10, 30, 30);
+	objManager.addObject<Ball, const char *, int, int, int, int>("assets/ball.png", width / 2 - 10, height / 2 - 10, 30, 30);
 
 
 	AI = new AILogic(objManager.getObject(BALL), objManager.getObject(RIGHT_PLAYER));
